@@ -20,7 +20,7 @@ from surrogate.model import INPUT_FEATURES, OUTPUT_FEATURES, SurrogateNet
 
 
 def load_checkpoint(path: Path):
-    ckpt = torch.load(path, map_location="cpu")
+    ckpt = torch.load(path, map_location="cpu", weights_only=False)
     model = SurrogateNet()
     model.load_state_dict(ckpt["model_state"])
     model.eval()

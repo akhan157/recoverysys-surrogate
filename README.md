@@ -4,7 +4,7 @@ A neural network surrogate model for high-power rocketry flight simulation.
 
 The physics simulation in [recoverysys-engine](https://github.com/akhan157/recoverysys-engine) is accurate but runs ODE integration on every call. This project trains a neural network on simulation outputs so that — given rocket parameters and wind conditions — predictions run in microseconds instead of milliseconds, with quantified accuracy loss.
 
-**Status: in progress**
+**Status: shipped** — trained on 2000 physics-engine simulations and benchmarked (2.0 µs/sample inference, ~45 ms/sample physics engine).
 
 ---
 
@@ -36,6 +36,26 @@ The physics simulation in [recoverysys-engine](https://github.com/akhan157/recov
 | `main_fps` | Main descent rate |
 | `drift_ft` | Lateral drift distance |
 | `p95_drift_ft` | 95th-percentile drift (Monte Carlo) |
+
+## Benchmark Results
+
+Trained on 1999 samples (100 epochs, AdamW, Huber loss). Evaluated on held-out 15% split.
+
+| Output | MAE | R² |
+|--------|------|------|
+| `apogee_ft` | 404 ft | 0.9915 |
+| `max_mach` | 0.18 | 0.8814 |
+| `drogue_fps` | 0.95 fps | 0.9956 |
+| `main_fps` | 0.24 fps | 0.9960 |
+| `drift_ft` | 211 ft | 0.9917 |
+
+| Metric | Value |
+|--------|-------|
+| Inference speed | **2.0 µs/sample** (1999 samples in 3.9 ms) |
+| Physics engine speed | ~45 ms/sample (via REST API) |
+| Speedup | **~22,000×** |
+
+R² ≥ 0.99 for 4 of 5 outputs. `max_mach` (R² = 0.88) is noisier due to Mach transitions during supersonic flight.
 
 ## Stack
 

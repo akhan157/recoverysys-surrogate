@@ -70,7 +70,7 @@ def run_simulation(params: dict, client: httpx.Client) -> dict | None:
             "drogue_fps":   result["descent"]["drogue_fps"],
             "main_fps":     result["descent"]["main_fps"],
             "drift_ft":     result["drift"]["distance_ft"],
-            "p95_drift_ft": result["monte_carlo"]["p95_drift_ft"],
+            "p95_drift_ft": result["monte_carlo"]["p95_drift_ft"] if result.get("monte_carlo") else 0.0,
         }
     except Exception:
         return None
