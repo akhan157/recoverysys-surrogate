@@ -1,4 +1,6 @@
-# surrogate-recoverysys
+# recoverysys-surrogate
+
+[![CI](https://github.com/akhan157/recoverysys-surrogate/actions/workflows/ci.yml/badge.svg)](https://github.com/akhan157/recoverysys-surrogate/actions/workflows/ci.yml)
 
 A neural network surrogate model for high-power rocketry flight simulation.
 
@@ -25,6 +27,7 @@ The physics simulation in [recoverysys-engine](https://github.com/akhan157/recov
 | `cd` | Drag coefficient |
 | `main_chute_diameter_in` | Main parachute diameter |
 | `drogue_chute_diameter_in` | Drogue parachute diameter |
+| `main_deploy_alt_ft` | Main parachute deployment altitude |
 | `wind_speed_mph` | Mean wind speed |
 | `wind_direction_deg` | Wind direction |
 
@@ -63,7 +66,7 @@ R² ≥ 0.99 for 4 of 5 outputs. `max_mach` (R² = 0.88) is noisier due to Mach 
 - PyTorch — neural network training
 - SciPy / NumPy — data generation via recoverysys-engine
 - scikit-learn — preprocessing, baseline comparison
-- Jupyter — exploratory notebooks
+- Jupyter — exploratory notebooks (optional, via the `dev` extra)
 
 ## Project structure
 
@@ -73,22 +76,43 @@ surrogate/
   model.py       neural network architecture
   train.py       training loop
   evaluate.py    accuracy vs. speed benchmarks
-notebooks/
-  01_data_exploration.ipynb
-  02_model_training.ipynb
-  03_results.ipynb
+tests/
+  test_model.py  forward pass shape and sanity tests
 data/            generated datasets (gitignored)
 models/          saved weights (gitignored)
-tests/
 ```
 
-## Setup
+## Installation
+
+Requires Python 3.11 or newer.
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
+
+# CPU-only PyTorch (~250 MB). Skip this line if you already have a torch build
+# you want to use (e.g. CUDA); `pip install -e .` will pull a default build.
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# Test dependencies only
+pip install -e ".[test]"
+
+# ...or the full dev environment (adds Jupyter, matplotlib, seaborn)
 pip install -e ".[dev]"
 ```
 
-Generate training data (requires recoverysys-engine running locally):
+## Tests
+
+```bash
+python -m pytest
+```
+
+The test suite covers the model only and needs no engine, dataset or trained
+checkpoint.
+
+## Usage
+
+Generate training data (requires [recoverysys-engine](https://github.com/akhan157/recoverysys-engine) running locally on `http://localhost:8000`):
 
 ```bash
 python -m surrogate.data_gen --samples 5000 --out data/train.parquet
@@ -110,3 +134,7 @@ python -m surrogate.evaluate --model models/surrogate_v1.pt --data data/test.par
 
 - [recoverysys-engine](https://github.com/akhan157/recoverysys-engine) — the physics simulation this surrogate approximates
 - [RecoverySys](https://github.com/akhan157/RecoverySys) — the frontend tool built on that engine
+
+## License
+
+Released under the [MIT License](LICENSE). © 2026 Adnan Khan.
