@@ -1,15 +1,40 @@
-data/
-models/
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-*.egg-info/
-dist/
-build/
+# Virtual environments
 .venv/
 venv/
+env/
+ENV/
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Notebooks
 .ipynb_checkpoints/
+
+# Generated data, model checkpoints and reports
+data/
+models/
 *.pt
+*.pth
+*.ckpt
+*.onnx
 *.parquet
 *.csv
+*.npy
+*.npz
+*.log
+
+# OS / editor noise
+.DS_Store
